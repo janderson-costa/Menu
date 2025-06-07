@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Menu - Demo</title>
+</head>
+
+<body>
+	<h1>Menu - Demo</h1>
+	<hr>
+	<button name="button1">Click with right button</button>
+	<button name="button2" type="button">Click with left button</button>
+</body>
+
+<script type="module">
+	import Menu from './Menu.js';
+	import { dom } from '../dom/dom.js';
+
+	window.dom = dom;
+
+	const menu = Menu({
+		trigger: document.querySelector('#button2'),
+		items: [
+			{ icon: '✏️', name: 'Item 1 of menu.', onClick: () => console.log('Item 1 of menu.') },
+			{ icon: '🔍', name: 'Item 2 of menu.' },
+			{ divider: true },
+			{ icon: '🛠️', name: 'Item 3 of menu.', id: 'item3' },
+		],
+		onShow: () => {},
+		onHide: () => {},
+	});
+
+	dom('button[name=button1]').on('contextmenu', ({ element, event }) => {
+		menu.show({ event });
+		console.log(event)
+	});
+
+	dom('button[name=button2]').on('click', ({ element, event }) => {
+		menu.show({ align: 'right' });
+		console.log(event)
+	});
+	
+</script>
+
+</html>
