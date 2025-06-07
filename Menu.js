@@ -5,10 +5,16 @@
 
 const __defaultOptions = {
 	trigger: null, // HTMLElement - Ex.: button | a | div
-	items: [], // [{ icon: HTMLElement, name: string, description: string, onClick: function }]
+	items: [], /* item: {
+		icon: HTMLElement, (opcional)
+		id: string, (opcional)
+		name: string,
+		description: string, (opcional)
+		onClick: function
+	}*/
 	position: 'left', // 'left' | 'right' | 'top left' | 'top right'
-	top: 0, // Ajuste de posição vertical quando necessário
-	left: 0, // Ajuste de posição horizontal quando necessário
+	top: 0, // Ajuste de posição vertical (opcional)
+	left: 0, // Ajuste de posição horizontal (opcional)
 	onShow: null,
 	onHide: null,
 };
