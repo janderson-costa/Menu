@@ -3,11 +3,12 @@
 	Descrição: Menu de contexto simples.
 */
 
-const defaultOptions = {
-	trigger: null, // HTMLElement (ex.: button | a | div)
+const __defaultOptions = {
+	trigger: null, // HTMLElement - Ex.: button | a | div
 	items: [], // [{ icon: HTMLElement, name: string, description: string, onClick: function }]
-	align: 'left', // 'left' | 'right' | 'top left' | 'top right'
+	position: 'left', // 'left' | 'right' | 'top left' | 'top right'
 	top: 0, // Ajuste de posição vertical quando necessário
+	left: 0, // Ajuste de posição horizontal quando necessário
 	onShow: null,
 	onHide: null,
 };
@@ -16,13 +17,14 @@ let __menu;
 window.addEventListener('resize', event => {
 	if (!__menu) return;
 
+	// Fechar o menu se a janela for redimensionada
 	destroy(__menu);
 });
 
-export default function Menu(options) {
-	options = {
+export default function Menu(defaultOptions) {
+	defaultOptions = {
+		...__defaultOptions,
 		...defaultOptions,
-		...options,
 	};
 
 	let $menu;
@@ -30,9 +32,8 @@ export default function Menu(options) {
 	let _classInvisible = '';
 
 	const _context = {
-		options,
+		options: defaultOptions,
 		element: null,
-		item: _item,
 		show,
 		hide,
 	};
@@ -43,13 +44,11 @@ export default function Menu(options) {
 		const $menu = document.createElement('div');
 
 		$menu.className = 'ctx-menu';
-		$menu.innerHTML = /*html*/`${options.items.map(item => {
+		$menu.innerHTML = /*html*/`${defaultOptions.items.map(item => {
 			if (item.divider) {
-				return (/*html*/`
-					<div class="ctx-divider"></div>
-				`);
+				return /*html*/`<div class="ctx-divider"></div>`;
 			} else {
-				return (/*html*/`
+				return /*html*/`
 					<div class="ctx-item">
 						<div class="ctx-icon"></div>
 						<div class="ctx-text">
@@ -57,13 +56,13 @@ export default function Menu(options) {
 							<div class="ctx-description">${item.description || ''}</div>
 						</div>
 					</div>
-				`);
+				`;
 			}
 		}).join('')}`;
 
 		// Itens
 		$menu.querySelectorAll(':scope > div').forEach(($item, index) => {
-			const item = options.items[index];
+			const item = defaultOptions.items[index];
 			const icon = item.icon;
 
 			$item.data = item;
@@ -100,49 +99,20 @@ export default function Menu(options) {
 		return $menu;
 	}
 
-	function _item(name) {
-		return {
-			get,
-			icon,
+	function show(options = {}) {
+		destroy($menu);
+
+		options = {
+			...defaultOptions,
+			...options,
 		};
 
-		function get() {
-			return options.items.find(x => x.name == name);
-		}
-
-		function icon(element) {
-			const $item = get().element;
-			const $iconPlace = $item.querySelector('.ctx-icon');
-
-			if (element) {
-				$iconPlace.innerHTML = '';
-				$iconPlace.appendChild(element);
-			} else if (element == '') {
-				$iconPlace.innerHTML = '';
-			} else {
-				return $iconPlace;
-			}
-		}
-	}
-
-	function show(event = {}) {
-		if (document.querySelector('.ctx-menu')) return;
-
-		let x;
-		let y;
+		let x = options.x || 0;
+		let y = options.y || 0;
 
 		$menu = create();
 		_classVisible = 'ctx-menu-visible-left';
 		_classInvisible = 'ctx-menu-invisible-left';
-
-		// Botão direito do mouse
-		if (event.type == 'contextmenu') {
-			event.preventDefault(); // Impede que o menu de contexto nativo do navegador seja aberto
-
-			// Coordenadas do cursor
-			x = event.x;
-			y = event.y;
-		}
 
 		// Posição
 		setTimeout(() => { // Para que window click não feche o menu
@@ -153,12 +123,12 @@ export default function Menu(options) {
 				x = trigger.offsetLeft;
 				y = trigger.offsetTop + trigger.offsetHeight + 1;
 
-				if (options.align.includes('top')) {
+				if (options.position.includes('top')) {
 					// Topo do trigger
 					y = trigger.offsetTop - $menu.offsetHeight - 1;
 				}
 
-				if (options.align.includes('right')) {
+				if (options.position.includes('right')) {
 					// Canto direito do trigger
 					x = x - $menu.offsetWidth + trigger.offsetWidth - 1;
 				}
@@ -176,7 +146,7 @@ export default function Menu(options) {
 
 			$menu.className = 'ctx-menu';
 			$menu.classList.add(_classVisible);
-			$menu.style.left = x + 'px';
+			$menu.style.left = options.left + x + 'px';
 			$menu.style.top = options.top + y + 'px';
 
 			if (options.onShow)
@@ -192,15 +162,17 @@ export default function Menu(options) {
 		if (!$menu) return;
 
 		if (event) {
-			if (!(!event.target.closest('.ctx-menu') || event.key == 'Escape'))
-				return;
+			if (
+				!(!event.target.closest('.ctx-menu') ||
+					event.key == 'Escape')
+			) return;
 		}
 
 		$menu.classList.remove(_classVisible);
 		$menu.classList.add(_classInvisible);
 
-		if (options.onHide)
-			options.onHide(_context);
+		if (defaultOptions.onHide)
+			defaultOptions.onHide(_context);
 
 		setTimeout(() => destroy($menu), 200);
 
