@@ -15,6 +15,7 @@ const __defaultOptions = {
 	position: 'left', // 'left' | 'right' | 'top left' | 'top right'
 	top: 0, // Ajuste de posição vertical (opcional)
 	left: 0, // Ajuste de posição horizontal (opcional)
+	maxHeight: null, // Altura máxima (px) do menu (opcional)
 	onShow: null,
 	onHide: null,
 };
@@ -55,7 +56,7 @@ export default function Menu(defaultOptions) {
 				return /*html*/`<div class="ctx-divider"></div>`;
 			} else {
 				return /*html*/`
-					<div class="ctx-item">
+					<div class="ctx-item" name="${item.name}">
 						<div class="ctx-icon"></div>
 						<div class="ctx-text">
 							<div class="ctx-name">${item.name}</div>
@@ -66,8 +67,11 @@ export default function Menu(defaultOptions) {
 			}
 		}).join('')}`;
 
+		if (defaultOptions.maxHeight)
+			$menu.style.maxHeight = defaultOptions.maxHeight + 'px';
+
 		// Itens
-		$menu.querySelectorAll(':scope > div').forEach(($item, index) => {
+		$menu.querySelectorAll(':scope > div.ctx-item').forEach(($item, index) => {
 			const item = defaultOptions.items[index];
 			const icon = item.icon;
 
