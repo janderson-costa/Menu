@@ -77,15 +77,13 @@ export default function Menu(defaultOptions) {
 			// Ícone
 			const $icon = $item.querySelector('.ctx-icon');
 
-			if ($icon) {
-				if (icon) {
-					if (typeof icon == 'string')
-						$icon.innerHTML = icon;
-					else if (icon instanceof HTMLElement)
-						$icon.appendChild(icon);
-				} else {
-					$icon.style.display = 'none';
-				}
+			if (icon != undefined && icon != null) {
+				if (typeof icon == 'string')
+					$icon.innerHTML = icon;
+				else if (icon instanceof HTMLElement)
+					$icon.appendChild(icon);
+			} else {
+				$icon.style.display = 'none';
 			}
 
 			// Evento
