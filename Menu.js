@@ -71,9 +71,11 @@ export default function Menu(defaultOptions) {
 			$menu.style.maxHeight = defaultOptions.maxHeight + 'px';
 
 		// Itens
-		$menu.querySelectorAll(':scope > div.ctx-item').forEach(($item, index) => {
+		$menu.querySelectorAll(':scope > div').forEach(($item, index) => {
 			const item = defaultOptions.items[index];
 			const icon = item.icon;
+
+			if (item.divider) return;
 
 			$item.data = item;
 			item.element = $item;
