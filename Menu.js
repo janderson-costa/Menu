@@ -41,6 +41,7 @@ export default function Menu(defaultOptions) {
 	const _context = {
 		options: defaultOptions,
 		element: null,
+		item,
 		show,
 		hide,
 	};
@@ -107,6 +108,29 @@ export default function Menu(defaultOptions) {
 		document.body.appendChild($menu);
 
 		return $menu;
+	}
+
+	function item(name) {
+		const item = defaultOptions.items.find(item => item.name == name);
+
+		return {
+			item,
+			icon,
+		};
+
+		function icon(stringOrElement) {
+			const $icon = item.element.querySelector('.ctx-icon');
+
+			if (!stringOrElement)
+				return $icon;
+
+			$icon.innerHTML = '';
+
+			if (typeof stringOrElement == 'string')
+				$icon.innerHTML = stringOrElement;
+			else if (stringOrElement instanceof HTMLElement)
+				$icon.appendChild(stringOrElement);
+		}
 	}
 
 	function show(options = {}) {
