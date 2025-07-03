@@ -30,9 +30,15 @@
 			{ icon: '🔍', name: 'Item 2 of menu.', id: 'item2' },
 			{ divider: true },
 			{ icon: '🛠️', name: 'Item 3 of menu.', id: 'item3' },
+			{ icon: '🛠️', name: 'Item 4 of menu.', id: 'item4', hidden: false },
 		],
 		onShow: context => {
+			const item = context.options.items.find(x => x.id == 'item4');
+			
+			item.show(true || false);
+			
 			console.log('onShow: Default');
+			console.log(item.getIcon());
 		},
 		onHide: context => {
 			console.log('onHide: Default');
