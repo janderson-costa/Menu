@@ -127,10 +127,12 @@ export default function Menu(menuDefaultOptions) {
 
 	function setIcon($icon, stringOrElement) {
 		if (
-			!$icon ||
 			typeof stringOrElement == 'undefined' ||
 			stringOrElement == null
-		) return;
+		) {
+			$icon.classList.add('hidden');
+			return;
+		}
 
 		$icon.innerHTML = '';
 

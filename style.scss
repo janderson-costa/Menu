@@ -20,6 +20,10 @@
 		transition: 0s;
 	}
 
+	.hidden {
+		display: none !important;
+	}
+
 	.disabled {
 		opacity: 0.6;
 		user-select: none;
@@ -42,10 +46,6 @@
 
 		&:active {
 			background-color: rgba($color-gray, 0.2);
-		}
-
-		&.hidden {
-			display: none;
 		}
 
 		.ctx-icon {
