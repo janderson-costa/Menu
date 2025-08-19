@@ -3,6 +3,16 @@
 	Descrição: Menu de contexto simples.
 */
 
+const __defaultOptions = {
+	trigger: null, // HTMLElement - Ex.: button | a | div
+	items: [], // __itemDefaultOptions[]
+	position: 'left', // 'left' | 'right' | 'top left' | 'top right'
+	top: 0, // Ajuste de posição vertical (opcional)
+	left: 0, // Ajuste de posição horizontal (opcional)
+	maxHeight: null, // Altura máxima (px) do menu (opcional)
+	onShow: null,
+	onHide: null,
+};
 const __itemDefaultOptions = {
 	icon: null, // HTMLElement (opcional)
 	id: null, // string (opcional)
@@ -18,16 +28,6 @@ const __itemDefaultOptions = {
 	show: null, // function
 	hide: null, // function
 };
-const __menuDefaultOptions = {
-	trigger: null, // HTMLElement - Ex.: button | a | div
-	items: [], // __itemDefaultOptions[]
-	position: 'left', // 'left' | 'right' | 'top left' | 'top right'
-	top: 0, // Ajuste de posição vertical (opcional)
-	left: 0, // Ajuste de posição horizontal (opcional)
-	maxHeight: null, // Altura máxima (px) do menu (opcional)
-	onShow: null,
-	onHide: null,
-};
 let __menu;
 
 window.addEventListener('resize', event => {
@@ -37,10 +37,10 @@ window.addEventListener('resize', event => {
 	destroy(__menu);
 });
 
-export default function Menu(menuDefaultOptions) {
-	menuDefaultOptions = {
-		...__menuDefaultOptions,
-		...menuDefaultOptions,
+export default function Menu(defaultOptions) {
+	defaultOptions = {
+		...__defaultOptions,
+		...defaultOptions,
 	};
 
 	let $menu;
@@ -48,7 +48,7 @@ export default function Menu(menuDefaultOptions) {
 	let _classInvisible = '';
 
 	const _context = {
-		options: menuDefaultOptions,
+		options: defaultOptions,
 		element: null,
 		show,
 		hide,
@@ -57,7 +57,7 @@ export default function Menu(menuDefaultOptions) {
 	return _context;
 
 	function create() {
-		menuDefaultOptions.items.forEach(item => {
+		defaultOptions.items.forEach(item => {
 			item = {
 				...__itemDefaultOptions,
 				...item,
@@ -67,7 +67,7 @@ export default function Menu(menuDefaultOptions) {
 		const $menu = document.createElement('div');
 
 		$menu.className = 'ctx-menu';
-		$menu.innerHTML = /*html*/`${menuDefaultOptions.items.map(item => {
+		$menu.innerHTML = /*html*/`${defaultOptions.items.map(item => {
 			if (item.divider) {
 				return /*html*/`<div class="ctx-divider"></div>`;
 			} else {
@@ -83,15 +83,15 @@ export default function Menu(menuDefaultOptions) {
 			}
 		}).join('')}`;
 
-		if (menuDefaultOptions.maxHeight) {
-			let unit = typeof menuDefaultOptions.maxHeight == 'number' ? 'px' : '';
+		if (defaultOptions.maxHeight) {
+			let unit = typeof defaultOptions.maxHeight == 'number' ? 'px' : '';
 
-			$menu.style.maxHeight = menuDefaultOptions.maxHeight + unit;
+			$menu.style.maxHeight = defaultOptions.maxHeight + unit;
 		}
 
 		// Itens
 		$menu.querySelectorAll(':scope > div').forEach(($item, index) => {
-			const item = menuDefaultOptions.items[index];
+			const item = defaultOptions.items[index];
 			const $icon = $item.querySelector('.ctx-icon');
 
 			item.element = $item;
@@ -146,7 +146,7 @@ export default function Menu(menuDefaultOptions) {
 		destroy($menu);
 
 		options = {
-			...menuDefaultOptions,
+			...defaultOptions,
 			...options,
 		};
 
@@ -214,8 +214,8 @@ export default function Menu(menuDefaultOptions) {
 		$menu.classList.remove(_classVisible);
 		$menu.classList.add(_classInvisible);
 
-		if (menuDefaultOptions.onHide)
-			menuDefaultOptions.onHide(_context);
+		if (defaultOptions.onHide)
+			defaultOptions.onHide(_context);
 
 		setTimeout(() => destroy($menu), 200);
 
