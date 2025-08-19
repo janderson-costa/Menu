@@ -6,7 +6,6 @@
 	font-size: 1em;
 	background-color: #fff;
 	min-width: 10em;
-	max-height: 300px;
 	border-radius: 6px;
 	padding: 0.5em 0;
 	overflow-y: auto;
@@ -19,6 +18,10 @@
 
 	* {
 		transition: 0s;
+	}
+
+	.hidden {
+		display: none !important;
 	}
 
 	.disabled {
@@ -63,6 +66,7 @@
 			.ctx-name {
 				font-weight: 500;
 				color: #000;
+				padding-bottom: 1.5px;
 			}
 
 			.ctx-description {
